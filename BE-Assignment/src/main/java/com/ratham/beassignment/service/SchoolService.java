@@ -14,9 +14,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.time.*;
+import java.time.temporal.TemporalAdjusters;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -69,6 +69,7 @@ public class SchoolService {
         if (slot == null)
 //            return null;
             throw new IllegalStateException("Blank Slot Entered");
+        slot.setBookedTs(new Date());
         return slotRepository.save(slot);
     }
 
@@ -88,5 +89,45 @@ public class SchoolService {
             logger.error("JwtException occurred: {}", e.getMessage());
             return false;
         }
+    }
+
+    public List<Slot> getAvailableSlotsForMonth() {
+        List<Slot> slots = createBlankSlotsForTheMonth();
+        Optional<List<Slot>> savedSlotsOptional = slotRepository.findSlotsBySlotStartTsAfter(new Date());
+        if (savedSlotsOptional.isPresent()) {
+            List<Slot> savedSlots = savedSlotsOptional.get();
+            List<Date> savedSlotsDates = savedSlots.stream().map(Slot::getSlotStartTs).toList();
+            slots = slots.stream().filter(slot -> !savedSlotsDates.contains(slot.getSlotStartTs())).toList();
+        }
+        logger.info("{} free slots found as of: {}", slots.size(), new Date());
+        return slots;
+    }
+
+    private List<Slot> createBlankSlotsForTheMonth() {
+        List<Slot> slots = new ArrayList<>();
+
+        LocalDate today = LocalDate.now();
+        LocalTime currentTime = LocalTime.now();
+
+        if (currentTime.isAfter(LocalTime.of(10, 0))) {
+            if (today.getDayOfWeek() == DayOfWeek.THURSDAY) {
+                today = today.with(TemporalAdjusters.nextOrSame(DayOfWeek.FRIDAY));
+            }
+            else {
+                today = today.with(TemporalAdjusters.nextOrSame(DayOfWeek.THURSDAY));
+            }
+        }
+
+        for (LocalDate date = today; date.getMonthValue() == today.getMonthValue(); date = date.plusDays(1)) {
+            if (date.getDayOfWeek() == DayOfWeek.THURSDAY || date.getDayOfWeek() == DayOfWeek.FRIDAY) {
+                Slot slot = new Slot();
+                LocalDateTime localDateTime = LocalDateTime.of(date, LocalTime.of(10, 0));
+                Date slotDate = Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+                slot.setSlotStartTs(slotDate);
+
+                slots.add(slot);
+            }
+        }
+        return slots;
     }
 }

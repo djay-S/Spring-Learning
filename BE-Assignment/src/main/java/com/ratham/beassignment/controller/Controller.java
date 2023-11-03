@@ -96,4 +96,23 @@ public class Controller {
         }
         return ResponseEntity.ok(slotsByUserId);
     }
+
+    @GetMapping("/search/slot/{id}")
+    public ResponseEntity<List<Slot>> getAvailableSlotsForTheMonth(@PathVariable("id") int userId,
+            @RequestHeader("Authorization") String token) {
+        List<Slot> slots;
+
+        try {
+            boolean isJwtValid = schoolService.validateJwt(token, userId);
+
+            if (!isJwtValid) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+            slots = schoolService.getAvailableSlotsForMonth();
+        }
+        catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+        return ResponseEntity.ok(slots);
+    }
 }
