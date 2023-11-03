@@ -1,0 +1,36 @@
+Design backend APIs which showcase the following actions in POSTMAN via a sequence of API calls.
+
+1. A student A enters his university ID number and pswd and gets a unique token(pick a code generated uuid for now) back which is used in authentication in all further APIs for this user - sent as bearer token in the headers.
+2. A sees a list of free sessions available with the dean. Each dean slot is 1 hr long and dean is only available on Thur, Fri 10 AM every week.
+3. A picks one of the above slots and books.
+4. Dean logins in with his university ID and pswd (similar to 1 above). Yes Dean too gets his own token.
+5. Dean sees a list of all pending sessions - student name, and slot details. Currently only A.
+6. Student B logs in, gets a list of free slots and books a slot.
+7. Dean logs in back and sees a list of his pending sessions - both A and B.
+8. Dean logs in back after slot time booked by A and he can see only B in the list. (You can simulate this by manually changing the start slot time that A booked to a past time. Yes thts is a DB manual edit)
+
+Submission Guidelines -
+Share the video to vamsee@ratham.in , harsh@ratham.in, kalpit@ratham.in, ananya@ratham.in
+
+that shows
+1. the postman demo,
+2. explains the code base, database structures
+3. All actual data in DB that got inserted after the above demo
+
+Instructions -
+Choose any language or DB that you seem apt
+All APIs except login APIs must take uuid bearer token that is validated in BE
+In the postman demo, show that a wrong uuid authentication will make an API fail
+If you don't understand the bearer token or authentication concept, google it. It is easy to understand.
+There could be multiple deans in the college with their available free weekly schedule
+If you are new to API design, try these resources. These should be enough for you to solve this assignment.
+
+Resources:
+API design - how to design one API - https://www.youtube.com/watch?v=_YlYuNMTCc8
+Mistakes folks do during API design - https://www.youtube.com/watch?v=P0a7PwRNLVU
+ https://www.youtube.com/watch?v=MiOSzpfP1Ww
+Bearer token - how to create/use it? https://www.youtube.com/watch?v=n-IFlWGX1t4
+How to connect API and DB?
+NodeJS - Watch full sequence, not just the first video https://www.youtube.com/watch?v=cfuWY46xuJc&list=PLdHg5T0SNpN3EoN3PEyCmPR42Ok_44OFT&index=1
+GoLang - https://www.youtube.com/watch?v=zICaTPBkupY
+

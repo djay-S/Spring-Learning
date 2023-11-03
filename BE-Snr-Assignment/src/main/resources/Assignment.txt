@@ -1,0 +1,35 @@
+Design backend architecture for an online dynamic assessment.
+
+Assume the question paper is a directed graph with a single root node where answers to all questions(nodes) in a given path can decide what the next question will be. Like a directed graph, it would have many possible end nodes when the assessment ends. A question can have any number of options. All questions are objective. There can be one or more right answers to a question. Right answer adds positive marks to the total, a negative answer gives negative marks to the total.
+
+Share a video to vamsee@ratham.in , harsh@ratham.in, kalpit@ratham.in, ananya@ratham.in that showcases -
+
+Sample assessment directed graph structure stored in DB
+All DB structures/tables you would use and dummy data in each of them
+All core backend data structures you would need to implement /next batch API
+You explaining all API full urls that would be called by FE to support the following user actions
+Show the current batch of questions. A batch represents the max number of questions, lets say Q1…QN. N is defined as - Q2 is always shown whenever Q1 is shown no matter what the Q1's answer user chooses, Q3 is always shown no matter what Q2's answer is…QN is always shown no matter what QN-1 answer is. Whatever gets shown after QN is influenced by whatever has been answered to all or a few of the questions that were shown from the root of the directed graph and till QN including QN.  In other words, N represents the max number of sequential nodes in a tree with one child each from Q1..QN-1. QN can have multiple children and parent of Q1 can have multiple children. A tree can have multiple such batches. A batch can be of size 1 too.
+For ex: Q34, Q35, Q37, Q38 can be a batch.
+Q38 has 3 children. Q45, Q46, Q47.
+Parent of Q34 can have 5 children where Q34 is one of them
+Q45 shows only when Q38 has answered option b, Q35 has answered c and d, and Q11 (somewhere in the path from root to Q34) has answered option a.
+Q46 shows up only when Q37 is answered b and Q38 is answered c.
+Q47 is shown when Q4 is answered c and Q13 is answered a.
+Note that when Q4 is answered c and Q13 is answered a (similar to last line above) but the user is currently at Q46, next question would be Q52.
+Answer each question by choosing an option from the multiple choice (Single or multiple select, assume no subjective Qs)
+Show next batch of questions
+Show previous batch
+The assessment auto ends when the leaf is reached. FE or User won't know which is the last question. He would only after he presses next.
+Score gets shown once assessment ends.
+
+
+You explaining the BE algorithms and data structures that are involved in figuring out what next question to show
+
+Instructions:
+FE or BE doesn't hardcode or remember any questions or whats correct answer(s) for a question or what the scoring is for a given question. All of that is stored in the DB.
+Note that the assessment continues to evolve with time. So design things in such a way that assessment is completely replaceable or editable without any code changes.
+No need to code anything for this submission
+Note that marks scored by the user doesn't influence what question comes next, its only the answer to a previous question(s) that can decide what shows next. Score is just an output of whether the user is choosing the right or wrong option for the current question.
+For 1, 2 show the DB and explain. For 3,4 write up in a doc and explain.
+Choose the DB that you feel is most appropriate. Questions must feel snappy when we press the next or previous button.
+
