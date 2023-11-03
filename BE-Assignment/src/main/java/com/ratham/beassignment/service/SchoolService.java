@@ -62,13 +62,26 @@ public class SchoolService {
     }
 
     public List<Slot> getSlotsByUserId(int userId) {
-        return slotRepository.findSlotsByStudentIdOrTeacherId(userId, userId).orElse(new ArrayList<>());
+        List<Slot> slots = slotRepository.findSlotsByStudentIdOrTeacherId(userId, userId).orElse(new ArrayList<>());
+        if (slots.isEmpty())
+            return slots;
+        return slots.stream().filter(slot -> slot.getSlotStartTs().after(new Date())).toList();
     }
 
     public Slot registerUserSlot(Slot slot) {
         if (slot == null)
 //            return null;
             throw new IllegalStateException("Blank Slot Entered");
+        Optional<Slot> slotsBySlotStartTsOptional = slotRepository.findSlotsBySlotStartTs(slot.getSlotStartTs());
+        if (slotsBySlotStartTsOptional.isPresent()) {
+            Slot existingSlot = slotsBySlotStartTsOptional.get();
+            if (existingSlot.getBookedBy() != slot.getBookedBy()) {
+                throw new IllegalStateException("Slot is already booked, select another slot");
+            }
+            else {
+                throw new IllegalStateException("Slot is Already booked");
+            }
+        }
         slot.setBookedTs(new Date());
         return slotRepository.save(slot);
     }

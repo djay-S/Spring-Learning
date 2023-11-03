@@ -18,6 +18,7 @@ import java.util.List;
 @Entity
 public class SchoolUser implements UserDetails {
     @Id
+    @GeneratedValue
     private int id;
     private String firstName;
     private String lastName;
